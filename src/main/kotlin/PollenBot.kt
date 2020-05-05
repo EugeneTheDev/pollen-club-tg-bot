@@ -25,6 +25,8 @@ class PollenBot(token: String) : CoroutineScope {
        bot {
             this.token = token
             dispatch {
+                startHandler()
+                helpHandler()
                 locationHandler()
                 birchHandler()
                 oakHandler()
@@ -68,6 +70,32 @@ class PollenBot(token: String) : CoroutineScope {
         2 -> "(Medium) \u26a0\ufe0f"
         3 -> "(High) \ud83d\udd34"
         else -> "(Death) \ud83d\udc80"
+    }
+
+    private fun Dispatcher.startHandler() = command("start") { bot, update ->
+        launch {
+            bot.sendMessage(
+                chatId = update.message!!.chat.id,
+                text = "Hello! I will help you monitor current situation with pollen concentration in the air. Just choose pollen type and send location"
+            )
+        }
+    }
+
+    private fun Dispatcher.helpHandler() = command("help") { bot, update ->
+        launch {
+            bot.sendMessage(
+                chatId = update.message!!.chat.id,
+                text = """
+                Commands list:
+                /birch (береза)
+                /oak (дуб)
+                /alder (ольха)
+                /sagebrush (полынь)
+                /hazel (орешник)
+                /cereals (злаки)
+            """.trimIndent()
+            )
+        }
     }
 
     private fun Dispatcher.birchHandler() = command("birch") { bot, update ->
