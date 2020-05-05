@@ -11,12 +11,15 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.lang.IllegalArgumentException
+import java.net.InetSocketAddress
+import java.net.Proxy
 
 fun main(args: Array<String>) {
-    PollenBot(args[0])
+    val proxy = if (args.size == 3) Proxy(Proxy.Type.SOCKS, InetSocketAddress(args[1], args[2].toInt())) else null
+    PollenBot(args[0], proxy)
 }
 
-class PollenBot(token: String) : CoroutineScope {
+class PollenBot(token: String, proxy: Proxy? = null) : CoroutineScope {
     override val coroutineContext = Dispatchers.Default
     private val analyser = Analyser()
     private val currentQueries = mutableMapOf<Long, PollenType>()
@@ -24,6 +27,9 @@ class PollenBot(token: String) : CoroutineScope {
     init {
        bot {
             this.token = token
+            if (proxy != null) {
+                this.proxy = proxy
+            }
             dispatch {
                 startHandler()
                 helpHandler()
