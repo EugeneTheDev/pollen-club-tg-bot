@@ -31,10 +31,10 @@ class Analyser(private val kNeighbours: Int = 3) : CoroutineScope {
 
         return valuesWithDistances.sortedBy { it.second }
             .subList(0, kNeighbours)
-            .groupingBy { it.first }
-            .eachCount()
-            .maxBy { it.value }
-            ?.key ?: throw IllegalArgumentException("Could not perform knn")
+            .groupBy { it.first }
+            .map { it.key to it.value.map { it.second }.sum() }
+            .minBy { it.second }
+            ?.first ?: throw IllegalArgumentException("Could not perform knn")
 
     }
 
