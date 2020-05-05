@@ -49,7 +49,8 @@ class PollenBot(token: String) : CoroutineScope {
                         )
                     bot.sendMessage(
                             chatId = chatId,
-                            text = "Current situation for *${pollenType.toString().toLowerCase()}*: $pollenValue",
+                            text = """Current situation for *${pollenType.toString().toLowerCase()}*: 
+                                        |*$pollenValue* ${prepareReport(pollenValue)}""".trimMargin(),
                             parseMode = ParseMode.MARKDOWN
                         )
                     currentQueries.remove(chatId)
@@ -60,6 +61,13 @@ class PollenBot(token: String) : CoroutineScope {
                 bot.sendMessage(update.message!!.chat.id, "An error was occurred")
             }
         }
+    }
+
+    private fun prepareReport(pollenValue: Int) = when(pollenValue) {
+        1 -> "(Normal) \u2705"
+        2 -> "(Medium) \u26a0\ufe0f"
+        3 -> "(High) \ud83d\udd34"
+        else -> "(Death) \ud83d\udc80"
     }
 
     private fun Dispatcher.birchHandler() = command("birch") { bot, update ->

@@ -3,6 +3,7 @@ package data
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlin.concurrent.fixedRateTimer
 import kotlin.math.pow
 import kotlin.math.sqrt
 
@@ -16,8 +17,8 @@ class Analyser(private val kNeighbours: Int = 3) : CoroutineScope {
     private lateinit var data: List<PollenInfo>
 
     init {
-        launch {
-           data = downloader.downloadCurrentData().await()
+        fixedRateTimer(daemon = true, period = 4*60*60*1000) {
+            launch {  data = downloader.downloadCurrentData().await() }
         }
     }
 
