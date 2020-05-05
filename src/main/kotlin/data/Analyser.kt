@@ -13,18 +13,18 @@ class Analyser(private val kNeighbours: Int = 3) : CoroutineScope {
     override val coroutineContext = Dispatchers.Default
 
     private val downloader = Downloader()
-    private lateinit var birchData: List<PollenInfo>
+    private lateinit var data: List<PollenInfo>
 
     init {
         launch {
-           birchData = downloader.downloadCurrentBirchData().await()
+           data = downloader.downloadCurrentData().await()
         }
     }
 
-    suspend fun predict(latitude: Double, longitude: Double): Int {
+    suspend fun predict(latitude: Double, longitude: Double, pollenType: PollenType): Int {
         val valuesWithDistances = mutableListOf<Pair<Int, Double>>()
 
-        birchData.forEach {
+        data.filter { it.pollenType == pollenType.typeCode }.forEach {
             val distance = calculateDistance(latitude, longitude, it.latitude, it.longitude)
             valuesWithDistances.add(Pair(it.value, distance))
         }

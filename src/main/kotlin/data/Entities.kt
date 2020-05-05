@@ -14,3 +14,12 @@ data class PollenResponse(
     val status: Int,
     val result: List<PollenInfo>
 )
+
+enum class PollenType(val typeCode: Int) {
+    BIRCH(1),
+    OAK(2),
+    ALDER(3),
+    SAGEBRUSH(4),
+    HAZEL(5),
+    CEREALS(6)
+}
