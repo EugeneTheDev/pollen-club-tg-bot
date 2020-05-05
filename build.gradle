@@ -4,8 +4,8 @@ plugins {
 
 apply plugin: 'application'
 
-group 'org.example'
-version '1.0-SNAPSHOT'
+group 'io.eugene'
+version '1.0'
 
 repositories {
     mavenCentral()
@@ -33,4 +33,15 @@ compileKotlin {
 }
 compileTestKotlin {
     kotlinOptions.jvmTarget = "1.8"
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'PollenBotKt'
+    }
+    from {
+        configurations.compileClasspath.collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
+    }
 }
